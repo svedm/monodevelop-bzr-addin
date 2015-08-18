@@ -37,6 +37,8 @@
     <Compile Include="BazaarRevision.cs" />
     <Compile Include="BazaarRepository.cs" />
     <Compile Include="BranchType.cs" />
+    <Compile Include="BazaarClient.cs" />
+    <Compile Include="BazaarClientException.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Manifest.addin.xml" />
