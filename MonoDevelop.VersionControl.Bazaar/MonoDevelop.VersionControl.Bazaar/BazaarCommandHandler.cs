@@ -292,6 +292,33 @@ namespace MonoDevelop.VersionControl.Bazaar
 			worker.Start ();
 		}// OnUnbind
 
+		[CommandUpdateHandler (BazaarCommands.Uncommit)]
+		protected void CanUncommit (CommandInfo item)
+		{
+			if (1 == GetItems ().Count) {
+				VersionControlItem vcitem = GetItems ()[0];
+				if (vcitem.Repository is BazaarRepository) {
+					item.Visible = ((BazaarRepository)vcitem.Repository).CanUncommit (vcitem.Path);
+					return;
+				}
+			} 
+			item.Visible = false;
+		}// CanUncommit
+
+		/// <summary>
+		/// Removes the last committed revision from the current branch.
+		/// </summary>
+		[CommandHandler (BazaarCommands.Uncommit)]
+		protected void OnUncommit()
+		{
+			VersionControlItem vcitem = GetItems ()[0];
+			BazaarRepository repo = (BazaarRepository)vcitem.Repository;
+
+			BazaarTask worker = new BazaarTask ();
+			worker.Description = string.Format ("Uncommitting {0}", vcitem.Path);
+			worker.Operation = delegate{ repo.Uncommit (vcitem.Path, worker.ProgressMonitor); };
+			worker.Start ();
+		}// OnUncommit
 	}
 }
 

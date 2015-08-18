@@ -237,6 +237,16 @@ namespace MonoDevelop.VersionControl.Bazaar
 			Bazaar.Unbind (localPath.FullPath, monitor);
 		}
 
+		public virtual bool CanUncommit (FilePath localPath)
+		{
+			return Directory.Exists (localPath.FullPath) && IsVersioned(localPath);
+		}
+
+		public virtual void Uncommit (FilePath localPath, IProgressMonitor monitor)
+		{
+			Bazaar.Uncommit (localPath.FullPath, monitor);
+		}
+
 		public virtual Dictionary<string, BranchType> GetKnownBranches (FilePath localPath)
 		{
 			return Bazaar.GetKnownBranches (localPath.FullPath);
