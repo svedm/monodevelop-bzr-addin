@@ -40,6 +40,9 @@
     <Compile Include="BazaarClient.cs" />
     <Compile Include="BazaarClientException.cs" />
     <Compile Include="BazaarCLibClient.cs" />
+    <Compile Include="BazaarNodeExtension.cs" />
+    <Compile Include="BazaarCommandHandler.cs" />
+    <Compile Include="BazaarCommands.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Manifest.addin.xml" />
