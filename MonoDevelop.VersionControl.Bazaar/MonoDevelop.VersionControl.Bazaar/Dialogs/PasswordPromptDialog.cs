@@ -4,9 +4,10 @@ namespace MonoDevelop.VersionControl.Bazaar
 {
 	public partial class PasswordPromptDialog : Gtk.Dialog
 	{
-		public PasswordPromptDialog()
+		public PasswordPromptDialog(string prompt)
 		{
 			this.Build();
+			this.promptLabel.Text = GLib.Markup.EscapeText (prompt);
 		}
 	}
 }

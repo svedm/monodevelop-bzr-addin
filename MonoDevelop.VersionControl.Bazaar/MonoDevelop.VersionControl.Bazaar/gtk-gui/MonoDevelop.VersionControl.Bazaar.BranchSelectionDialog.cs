@@ -4,58 +4,144 @@ namespace MonoDevelop.VersionControl.Bazaar
 {
 	public partial class BranchSelectionDialog
 	{
-		private global::Gtk.Button buttonCancel;
-		
-		private global::Gtk.Button buttonOk;
-
-		protected virtual void Build ()
-		{
-			global::Stetic.Gui.Initialize (this);
-			// Widget MonoDevelop.VersionControl.Bazaar.BranchSelectionDialog
-			this.Name = "MonoDevelop.VersionControl.Bazaar.BranchSelectionDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("dialog1");
-			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
-			// Internal child MonoDevelop.VersionControl.Bazaar.BranchSelectionDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
-			w1.Name = "dialog1_VBox";
-			w1.BorderWidth = ((uint)(2));
-			// Internal child MonoDevelop.VersionControl.Bazaar.BranchSelectionDialog.ActionArea
-			global::Gtk.HButtonBox w2 = this.ActionArea;
-			w2.Name = "dialog1_ActionArea";
-			w2.Spacing = 10;
-			w2.BorderWidth = ((uint)(5));
-			w2.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
-			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonCancel = new global::Gtk.Button ();
-			this.buttonCancel.CanDefault = true;
-			this.buttonCancel.CanFocus = true;
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.UseStock = true;
-			this.buttonCancel.UseUnderline = true;
-			this.buttonCancel.Label = "gtk-cancel";
-			this.AddActionWidget (this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w3 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w2 [this.buttonCancel]));
-			w3.Expand = false;
-			w3.Fill = false;
-			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonOk = new global::Gtk.Button ();
-			this.buttonOk.CanDefault = true;
-			this.buttonOk.CanFocus = true;
-			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.UseStock = true;
-			this.buttonOk.UseUnderline = true;
-			this.buttonOk.Label = "gtk-ok";
-			this.AddActionWidget (this.buttonOk, -5);
-			global::Gtk.ButtonBox.ButtonBoxChild w4 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w2 [this.buttonOk]));
-			w4.Position = 1;
-			w4.Expand = false;
-			w4.Fill = false;
-			if ((this.Child != null)) {
-				this.Child.ShowAll ();
-			}
-			this.DefaultWidth = 400;
-			this.DefaultHeight = 300;
-			this.Show ();
-		}
+		private Gtk.VBox vbox2;
+        
+        private Gtk.ScrolledWindow GtkScrolledWindow;
+        
+        private Gtk.TreeView branchTreeView;
+        
+        private Gtk.FileChooserButton localPathButton;
+        
+        private Gtk.HBox hbox1;
+        
+        private Gtk.CheckButton defaultCB;
+        
+        private Gtk.CheckButton overwriteCB;
+        
+        private Gtk.CheckButton omitCB;
+        
+        private Gtk.Button buttonCancel;
+        
+        private Gtk.Button buttonOk;
+        
+        protected virtual void Build() {
+            Stetic.Gui.Initialize(this);
+            // Widget MonoDevelop.VersionControl.Bazaar.Dialogs.BranchSelectionDialog
+            this.CanFocus = true;
+            this.Name = "MonoDevelop.VersionControl.Bazaar.Dialogs.BranchSelectionDialog";
+            this.Title = Mono.Unix.Catalog.GetString("Choose a Branch");
+            this.WindowPosition = ((Gtk.WindowPosition)(4));
+            this.Modal = true;
+            // Internal child MonoDevelop.VersionControl.Bazaar.Dialogs.BranchSelectionDialog.VBox
+            Gtk.VBox w1 = this.VBox;
+            w1.Name = "dialog1_VBox";
+            w1.BorderWidth = ((uint)(2));
+            // Container child dialog1_VBox.Gtk.Box+BoxChild
+            this.vbox2 = new Gtk.VBox();
+            this.vbox2.Name = "vbox2";
+            this.vbox2.Spacing = 6;
+            // Container child vbox2.Gtk.Box+BoxChild
+            this.GtkScrolledWindow = new Gtk.ScrolledWindow();
+            this.GtkScrolledWindow.Name = "GtkScrolledWindow";
+            this.GtkScrolledWindow.ShadowType = ((Gtk.ShadowType)(1));
+            // Container child GtkScrolledWindow.Gtk.Container+ContainerChild
+            this.branchTreeView = new Gtk.TreeView();
+            this.branchTreeView.CanFocus = true;
+            this.branchTreeView.Name = "branchTreeView";
+            this.branchTreeView.SearchColumn = 0;
+            this.GtkScrolledWindow.Add(this.branchTreeView);
+            this.vbox2.Add(this.GtkScrolledWindow);
+            Gtk.Box.BoxChild w3 = ((Gtk.Box.BoxChild)(this.vbox2[this.GtkScrolledWindow]));
+            w3.Position = 0;
+            // Container child vbox2.Gtk.Box+BoxChild
+            this.localPathButton = new Gtk.FileChooserButton(Mono.Unix.Catalog.GetString("Choose Local Path"), ((Gtk.FileChooserAction)(2)));
+            this.localPathButton.Name = "localPathButton";
+            this.localPathButton.ShowHidden = true;
+            this.vbox2.Add(this.localPathButton);
+            Gtk.Box.BoxChild w4 = ((Gtk.Box.BoxChild)(this.vbox2[this.localPathButton]));
+            w4.Position = 1;
+            w4.Expand = false;
+            w4.Fill = false;
+            // Container child vbox2.Gtk.Box+BoxChild
+            this.hbox1 = new Gtk.HBox();
+            this.hbox1.Name = "hbox1";
+            this.hbox1.Spacing = 6;
+            // Container child hbox1.Gtk.Box+BoxChild
+            this.defaultCB = new Gtk.CheckButton();
+            this.defaultCB.CanFocus = true;
+            this.defaultCB.Name = "defaultCB";
+            this.defaultCB.Label = Mono.Unix.Catalog.GetString("Set as _Default");
+            this.defaultCB.DrawIndicator = true;
+            this.defaultCB.UseUnderline = true;
+            this.hbox1.Add(this.defaultCB);
+            Gtk.Box.BoxChild w5 = ((Gtk.Box.BoxChild)(this.hbox1[this.defaultCB]));
+            w5.Position = 0;
+            // Container child hbox1.Gtk.Box+BoxChild
+            this.overwriteCB = new Gtk.CheckButton();
+            this.overwriteCB.CanFocus = true;
+            this.overwriteCB.Name = "overwriteCB";
+            this.overwriteCB.Label = Mono.Unix.Catalog.GetString("O_verwrite");
+            this.overwriteCB.DrawIndicator = true;
+            this.overwriteCB.UseUnderline = true;
+            this.hbox1.Add(this.overwriteCB);
+            Gtk.Box.BoxChild w6 = ((Gtk.Box.BoxChild)(this.hbox1[this.overwriteCB]));
+            w6.Position = 1;
+            // Container child hbox1.Gtk.Box+BoxChild
+            this.omitCB = new Gtk.CheckButton();
+            this.omitCB.CanFocus = true;
+            this.omitCB.Name = "omitCB";
+            this.omitCB.Label = Mono.Unix.Catalog.GetString("O_mit History");
+            this.omitCB.DrawIndicator = true;
+            this.omitCB.UseUnderline = true;
+            this.hbox1.Add(this.omitCB);
+            Gtk.Box.BoxChild w7 = ((Gtk.Box.BoxChild)(this.hbox1[this.omitCB]));
+            w7.Position = 2;
+            this.vbox2.Add(this.hbox1);
+            Gtk.Box.BoxChild w8 = ((Gtk.Box.BoxChild)(this.vbox2[this.hbox1]));
+            w8.Position = 2;
+            w8.Expand = false;
+            w8.Fill = false;
+            w1.Add(this.vbox2);
+            Gtk.Box.BoxChild w9 = ((Gtk.Box.BoxChild)(w1[this.vbox2]));
+            w9.Position = 0;
+            // Internal child MonoDevelop.VersionControl.Bazaar.Dialogs.BranchSelectionDialog.ActionArea
+            Gtk.HButtonBox w10 = this.ActionArea;
+            w10.Name = "dialog1_ActionArea";
+            w10.Spacing = 6;
+            w10.BorderWidth = ((uint)(5));
+            w10.LayoutStyle = ((Gtk.ButtonBoxStyle)(4));
+            // Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
+            this.buttonCancel = new Gtk.Button();
+            this.buttonCancel.CanDefault = true;
+            this.buttonCancel.CanFocus = true;
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.UseStock = true;
+            this.buttonCancel.UseUnderline = true;
+            this.buttonCancel.Label = "gtk-cancel";
+            this.AddActionWidget(this.buttonCancel, -6);
+            Gtk.ButtonBox.ButtonBoxChild w11 = ((Gtk.ButtonBox.ButtonBoxChild)(w10[this.buttonCancel]));
+            w11.Expand = false;
+            w11.Fill = false;
+            // Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
+            this.buttonOk = new Gtk.Button();
+            this.buttonOk.CanDefault = true;
+            this.buttonOk.CanFocus = true;
+            this.buttonOk.Name = "buttonOk";
+            this.buttonOk.UseStock = true;
+            this.buttonOk.UseUnderline = true;
+            this.buttonOk.Label = "gtk-ok";
+            this.AddActionWidget(this.buttonOk, -5);
+            Gtk.ButtonBox.ButtonBoxChild w12 = ((Gtk.ButtonBox.ButtonBoxChild)(w10[this.buttonOk]));
+            w12.Position = 1;
+            w12.Expand = false;
+            w12.Fill = false;
+            if ((this.Child != null)) {
+                this.Child.ShowAll();
+            }
+            this.DefaultWidth = 400;
+            this.DefaultHeight = 257;
+            this.Show();
+            this.omitCB.Toggled += new System.EventHandler(this.OnOmitCBToggled);
+        }
 	}
 }

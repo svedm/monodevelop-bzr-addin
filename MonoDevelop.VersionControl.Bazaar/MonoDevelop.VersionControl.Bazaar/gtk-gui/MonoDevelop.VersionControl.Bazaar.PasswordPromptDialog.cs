@@ -4,58 +4,98 @@ namespace MonoDevelop.VersionControl.Bazaar
 {
 	public partial class PasswordPromptDialog
 	{
-		private global::Gtk.Button buttonCancel;
 		
-		private global::Gtk.Button buttonOk;
-
-		protected virtual void Build ()
-		{
-			global::Stetic.Gui.Initialize (this);
-			// Widget MonoDevelop.VersionControl.Bazaar.PasswordPromptDialog
-			this.Name = "MonoDevelop.VersionControl.Bazaar.PasswordPromptDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("dialog1");
-			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
-			// Internal child MonoDevelop.VersionControl.Bazaar.PasswordPromptDialog.VBox
-			global::Gtk.VBox w1 = this.VBox;
-			w1.Name = "dialog1_VBox";
-			w1.BorderWidth = ((uint)(2));
-			// Internal child MonoDevelop.VersionControl.Bazaar.PasswordPromptDialog.ActionArea
-			global::Gtk.HButtonBox w2 = this.ActionArea;
-			w2.Name = "dialog1_ActionArea";
-			w2.Spacing = 10;
-			w2.BorderWidth = ((uint)(5));
-			w2.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
-			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonCancel = new global::Gtk.Button ();
-			this.buttonCancel.CanDefault = true;
-			this.buttonCancel.CanFocus = true;
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.UseStock = true;
-			this.buttonCancel.UseUnderline = true;
-			this.buttonCancel.Label = "gtk-cancel";
-			this.AddActionWidget (this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w3 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w2 [this.buttonCancel]));
-			w3.Expand = false;
-			w3.Fill = false;
-			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonOk = new global::Gtk.Button ();
-			this.buttonOk.CanDefault = true;
-			this.buttonOk.CanFocus = true;
-			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.UseStock = true;
-			this.buttonOk.UseUnderline = true;
-			this.buttonOk.Label = "gtk-ok";
-			this.AddActionWidget (this.buttonOk, -5);
-			global::Gtk.ButtonBox.ButtonBoxChild w4 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w2 [this.buttonOk]));
-			w4.Position = 1;
-			w4.Expand = false;
-			w4.Fill = false;
-			if ((this.Child != null)) {
-				this.Child.ShowAll ();
-			}
-			this.DefaultWidth = 400;
-			this.DefaultHeight = 300;
-			this.Show ();
-		}
+        private Gtk.VBox vbox2;
+        
+        private Gtk.Label promptLabel;
+        
+        private Gtk.Entry passwordEntry;
+        
+        private Gtk.Button buttonCancel;
+        
+        private Gtk.Button buttonOk;
+        
+        protected virtual void Build() {
+            Stetic.Gui.Initialize(this);
+            // Widget MonoDevelop.VersionControl.Bazaar.Dialogs.PasswordPromptDialog
+            this.Name = "MonoDevelop.VersionControl.Bazaar.Dialogs.PasswordPromptDialog";
+            this.Title = Mono.Unix.Catalog.GetString("Enter your password");
+            this.WindowPosition = ((Gtk.WindowPosition)(4));
+            this.Modal = true;
+            // Internal child MonoDevelop.VersionControl.Bazaar.Dialogs.PasswordPromptDialog.VBox
+            Gtk.VBox w1 = this.VBox;
+            w1.Name = "dialog1_VBox";
+            w1.BorderWidth = ((uint)(2));
+            // Container child dialog1_VBox.Gtk.Box+BoxChild
+            this.vbox2 = new Gtk.VBox();
+            this.vbox2.Name = "vbox2";
+            this.vbox2.Spacing = 6;
+            // Container child vbox2.Gtk.Box+BoxChild
+            this.promptLabel = new Gtk.Label();
+            this.promptLabel.Name = "promptLabel";
+            this.promptLabel.LabelProp = Mono.Unix.Catalog.GetString("Password prompt:");
+            this.vbox2.Add(this.promptLabel);
+            Gtk.Box.BoxChild w2 = ((Gtk.Box.BoxChild)(this.vbox2[this.promptLabel]));
+            w2.Position = 0;
+            w2.Expand = false;
+            w2.Fill = false;
+            w2.Padding = ((uint)(5));
+            // Container child vbox2.Gtk.Box+BoxChild
+            this.passwordEntry = new Gtk.Entry();
+            this.passwordEntry.CanFocus = true;
+            this.passwordEntry.Name = "passwordEntry";
+            this.passwordEntry.IsEditable = true;
+            this.passwordEntry.ActivatesDefault = true;
+            this.passwordEntry.Visibility = false;
+            this.passwordEntry.InvisibleChar = '*';
+            this.vbox2.Add(this.passwordEntry);
+            Gtk.Box.BoxChild w3 = ((Gtk.Box.BoxChild)(this.vbox2[this.passwordEntry]));
+            w3.Position = 1;
+            w3.Expand = false;
+            w3.Fill = false;
+            w3.Padding = ((uint)(5));
+            w1.Add(this.vbox2);
+            Gtk.Box.BoxChild w4 = ((Gtk.Box.BoxChild)(w1[this.vbox2]));
+            w4.Position = 0;
+            w4.Expand = false;
+            w4.Fill = false;
+            // Internal child MonoDevelop.VersionControl.Bazaar.Dialogs.PasswordPromptDialog.ActionArea
+            Gtk.HButtonBox w5 = this.ActionArea;
+            w5.Name = "dialog1_ActionArea";
+            w5.Spacing = 6;
+            w5.BorderWidth = ((uint)(5));
+            w5.LayoutStyle = ((Gtk.ButtonBoxStyle)(4));
+            // Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
+            this.buttonCancel = new Gtk.Button();
+            this.buttonCancel.CanDefault = true;
+            this.buttonCancel.CanFocus = true;
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.UseStock = true;
+            this.buttonCancel.UseUnderline = true;
+            this.buttonCancel.Label = "gtk-cancel";
+            this.AddActionWidget(this.buttonCancel, -6);
+            Gtk.ButtonBox.ButtonBoxChild w6 = ((Gtk.ButtonBox.ButtonBoxChild)(w5[this.buttonCancel]));
+            w6.Expand = false;
+            w6.Fill = false;
+            // Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
+            this.buttonOk = new Gtk.Button();
+            this.buttonOk.CanDefault = true;
+            this.buttonOk.CanFocus = true;
+            this.buttonOk.Name = "buttonOk";
+            this.buttonOk.UseStock = true;
+            this.buttonOk.UseUnderline = true;
+            this.buttonOk.Label = "gtk-ok";
+            this.AddActionWidget(this.buttonOk, -5);
+            Gtk.ButtonBox.ButtonBoxChild w7 = ((Gtk.ButtonBox.ButtonBoxChild)(w5[this.buttonOk]));
+            w7.Position = 1;
+            w7.Expand = false;
+            w7.Fill = false;
+            if ((this.Child != null)) {
+                this.Child.ShowAll();
+            }
+            this.DefaultWidth = 400;
+            this.DefaultHeight = 137;
+            this.Show();
+        }
 	}
 }
