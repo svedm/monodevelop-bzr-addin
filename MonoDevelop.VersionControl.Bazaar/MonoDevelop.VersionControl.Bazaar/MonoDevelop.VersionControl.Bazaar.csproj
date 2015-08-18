@@ -39,6 +39,7 @@
     <Compile Include="BranchType.cs" />
     <Compile Include="BazaarClient.cs" />
     <Compile Include="BazaarClientException.cs" />
+    <Compile Include="BazaarCLibClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Manifest.addin.xml" />
@@ -47,6 +48,7 @@
   <Import Project="..\packages\MonoDevelop.Addins.0.2.3\build\net40\MonoDevelop.Addins.targets" Condition="Exists('..\packages\MonoDevelop.Addins.0.2.3\build\net40\MonoDevelop.Addins.targets')" />
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="MonoDevelop.VersionControl.Bazaar.dll.config" />
   </ItemGroup>
   <ItemGroup>
     <AddinReference Include="MonoDevelop.VersionControl" />
