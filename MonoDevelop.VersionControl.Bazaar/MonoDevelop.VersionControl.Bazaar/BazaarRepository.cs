@@ -45,6 +45,7 @@ namespace MonoDevelop.VersionControl.Bazaar
 
 		private void Init()
 		{
+			Url = "";
 			tempfiles = new Dictionary<string,string>();
 			statusCache = new Dictionary<FilePath, VersionInfo>();
 		}
