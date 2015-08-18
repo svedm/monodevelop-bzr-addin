@@ -218,7 +218,15 @@ namespace MonoDevelop.VersionControl.Bazaar
 			return files;
 		}// GetAllFiles
 
-
+		/// <summary>
+		/// Ignores a file
+		/// </summary>
+		[CommandHandler (BazaarCommands.Ignore)]
+		protected void OnIgnore()
+		{
+			VersionControlItem vcitem = GetItems ()[0];
+			((BazaarRepository)vcitem.Repository).Ignore (vcitem.Path);
+		}// OnIgnore
 	}
 }
 
