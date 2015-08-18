@@ -207,6 +207,16 @@ namespace MonoDevelop.VersionControl.Bazaar
 			Bazaar.Merge (mergeLocation, localPath.FullPath, remember, overwrite, new BazaarRevision (this, BazaarRevision.NONE), new BazaarRevision (this, BazaarRevision.NONE), monitor);
 		}
 
+		public virtual string GetBoundBranch (FilePath localPath)
+		{
+			return Bazaar.GetBoundBranch (localPath.FullPath);
+		}
+
+		public virtual void Bind (string branchUrl, FilePath localPath, IProgressMonitor monitor)
+		{
+			Bazaar.Bind (branchUrl, localPath.FullPath, monitor);
+		}
+
 		public virtual Dictionary<string, BranchType> GetKnownBranches (FilePath localPath)
 		{
 			return Bazaar.GetKnownBranches (localPath.FullPath);

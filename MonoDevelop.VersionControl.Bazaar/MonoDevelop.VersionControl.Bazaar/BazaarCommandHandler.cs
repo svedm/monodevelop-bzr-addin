@@ -225,8 +225,31 @@ namespace MonoDevelop.VersionControl.Bazaar
 		protected void OnIgnore()
 		{
 			VersionControlItem vcitem = GetItems ()[0];
-			((BazaarRepository)vcitem.Repository).Ignore (vcitem.Path);
+			((BazaarRepository)vcitem.Repository).Ignore (new [] { vcitem.Path });
 		}// OnIgnore
+
+		/// <summary>
+		/// Binds a file
+		/// </summary>
+		[CommandHandler (BazaarCommands.Bind)]
+		protected void OnBind()
+		{
+			VersionControlItem vcitem = GetItems ()[0];
+			BazaarRepository repo = (BazaarRepository)vcitem.Repository;
+			string boundBranch = repo.GetBoundBranch (vcitem.Path);
+
+			var bsd = new BranchSelectionDialog (new string[]{boundBranch}, boundBranch, vcitem.Path.FullPath, false, false, false, false);
+			try {
+				if ((int)Gtk.ResponseType.Ok == bsd.Run () && !string.IsNullOrEmpty (bsd.SelectedLocation)) {
+					BazaarTask worker = new BazaarTask ();
+					worker.Description = string.Format ("Binding to {0}", bsd.SelectedLocation);
+					worker.Operation = delegate{ repo.Bind (bsd.SelectedLocation, vcitem.Path, worker.ProgressMonitor); };
+					worker.Start ();
+				}
+			} finally {
+				bsd.Destroy ();
+			}
+		}// OnBind
 	}
 }
 
