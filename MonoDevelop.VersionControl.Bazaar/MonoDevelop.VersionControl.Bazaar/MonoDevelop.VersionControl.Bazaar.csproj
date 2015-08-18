@@ -43,6 +43,8 @@
     <Compile Include="BazaarNodeExtension.cs" />
     <Compile Include="BazaarCommandHandler.cs" />
     <Compile Include="BazaarCommands.cs" />
+    <Compile Include="BazaarTask.cs" />
+    <Compile Include="BazaarVersionControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Manifest.addin.xml" />

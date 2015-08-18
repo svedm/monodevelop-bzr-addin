@@ -8,6 +8,30 @@ namespace MonoDevelop.VersionControl.Bazaar
 {
 	public class BazaarRepository : UrlBasedRepository
 	{
+		private Dictionary<string,string> tempfiles;
+		private Dictionary<FilePath,VersionInfo> statusCache;
+
+		public BazaarVersionControl Bazaar {
+			get { return (BazaarVersionControl) VersionControlSystem; }
+		}
+
+		public BazaarRepository ()
+		{
+			Init ();
+		}
+
+		public BazaarRepository (BazaarVersionControl vcs,string url) : base (vcs)
+		{
+			Init ();
+			Url = url;
+		}
+
+		private void Init ()
+		{
+			tempfiles = new Dictionary<string,string>();
+			statusCache = new Dictionary<FilePath, VersionInfo>();
+		}
+
 		#region implemented abstract members of Repository
 
 		public override string GetBaseText(FilePath localFile)
@@ -114,6 +138,33 @@ namespace MonoDevelop.VersionControl.Bazaar
 
 		#endregion
 
+		private VersionInfo GetCachedVersionInfo (FilePath localPath, bool getRemoteStatus)
+		{
+			VersionInfo status = null;
+			if (statusCache.ContainsKey (localPath)) {
+				status = statusCache[localPath];
+			} else {
+				status = GetVersionInfo (localPath, getRemoteStatus ? VersionInfoQueryFlags.IncludeRemoteStatus : VersionInfoQueryFlags.None);
+			}
+			return status;
+		}
+
+		public virtual bool IsConflicted (FilePath localFile)
+		{
+			if (string.IsNullOrEmpty (GetLocalBasePath (localFile.FullPath))) {
+				return false;
+			}
+
+			VersionInfo info = GetCachedVersionInfo (localFile, false);
+			return (null != info && info.IsVersioned && (0 != (info.Status & VersionStatus.Conflicted)));
+		}
+
+		public virtual void Resolve (FilePath[] localPaths, bool recurse, IProgressMonitor monitor)
+		{
+			foreach (FilePath localPath in localPaths)
+				Bazaar.Resolve (localPath.FullPath, recurse, monitor);
+		}
+
 		public static string GetLocalBasePath(string localPath)
 		{
 			if (null == localPath)
@@ -126,6 +177,11 @@ namespace MonoDevelop.VersionControl.Bazaar
 			}
 
 			return GetLocalBasePath(Path.GetDirectoryName(localPath));
+		}
+
+		public bool CanResolve(FilePath path)
+		{
+			return IsConflicted (path);
 		}
 	}
 
