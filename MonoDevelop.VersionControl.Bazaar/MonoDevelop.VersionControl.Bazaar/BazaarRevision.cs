@@ -27,7 +27,7 @@ namespace MonoDevelop.VersionControl.Bazaar
 
 		public override Revision GetPrevious()
 		{
-			throw new NotImplementedException();
+			return new BazaarRevision(Repository, string.Format("before:{0}", Rev));
 		}
 
 		#endregion
