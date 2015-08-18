@@ -138,6 +138,17 @@ namespace MonoDevelop.VersionControl.Bazaar
 
 		#endregion
 
+		internal bool IsVersioned(FilePath localPath)
+		{
+			if (string.IsNullOrEmpty(GetLocalBasePath(localPath.FullPath)))
+			{
+				return false;
+			}
+
+			var info = GetCachedVersionInfo(localPath, false);
+			return (null != info && info.IsVersioned);
+		}
+
 		private VersionInfo GetCachedVersionInfo (FilePath localPath, bool getRemoteStatus)
 		{
 			VersionInfo status = null;
@@ -163,6 +174,22 @@ namespace MonoDevelop.VersionControl.Bazaar
 		{
 			foreach (FilePath localPath in localPaths)
 				Bazaar.Resolve (localPath.FullPath, recurse, monitor);
+		}
+
+		public virtual bool CanPull (FilePath localPath)
+		{
+			return Directory.Exists (localPath.FullPath) && IsVersioned(localPath);
+		}
+
+		public virtual void Pull (string pullLocation, FilePath localPath, bool remember, bool overwrite, IProgressMonitor monitor) 
+		{
+			Bazaar.StoreCredentials (pullLocation);
+			Bazaar.Pull (pullLocation, localPath.FullPath, remember, overwrite, monitor);
+		}
+
+		public virtual Dictionary<string, BranchType> GetKnownBranches (FilePath localPath)
+		{
+			return Bazaar.GetKnownBranches (localPath.FullPath);
 		}
 
 		public static string GetLocalBasePath(string localPath)
