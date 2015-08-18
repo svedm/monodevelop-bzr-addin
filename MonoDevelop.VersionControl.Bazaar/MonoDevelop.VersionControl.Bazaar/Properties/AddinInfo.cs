@@ -2,14 +2,16 @@
 using Mono.Addins;
 using Mono.Addins.Description;
 
-[assembly:Addin(
-	"MonoDevelop.VersionControl.Bazaar", 
-	Namespace = "MonoDevelop.VersionControl.Bazaar",
-	Version = "1.0"
-)]
+[assembly:Addin("VersionControl.Bazaar", 
+	Namespace = "MonoDevelop",
+	Version = "1.0",
+	Category = "Version Control")]
 
-[assembly:AddinName("MonoDevelop.VersionControl.Bazaar")]
-[assembly:AddinCategory("IDE extensions")]
-[assembly:AddinDescription("MonoDevelop.VersionControl.Bazaar")]
-[assembly:AddinAuthor("VeNOm")]
+[assembly:AddinName("Bazaar support")]
+[assembly:AddinDescription("Bazaar Mercurial support for the Version Control Add-in")]
+[assembly:AddinUrl("https://github.com/svedm/monodevelop-bzr-addin")]
+[assembly:AddinAuthor("Svetoslav Karasev")]
 
+[assembly:AddinDependency ("Core", MonoDevelop.BuildInfo.Version)]
+[assembly:AddinDependency ("Ide", MonoDevelop.BuildInfo.Version)]
+[assembly:AddinDependency ("VersionControl", MonoDevelop.BuildInfo.Version)]
