@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using MonoDevelop.Core;
 using System.IO;
+using System.Linq;
+using Gtk;
 
 namespace MonoDevelop.VersionControl.Bazaar
 {
@@ -10,6 +12,8 @@ namespace MonoDevelop.VersionControl.Bazaar
 	{
 		private Dictionary<string,string> tempfiles;
 		private Dictionary<FilePath,VersionInfo> statusCache;
+
+		public string LocalBasePath { get; set; }
 
 		public BazaarVersionControl Bazaar
 		{
@@ -19,6 +23,17 @@ namespace MonoDevelop.VersionControl.Bazaar
 		public BazaarRepository()
 		{
 			Init();
+		}
+
+		~BazaarRepository ()
+		{
+			foreach (string tmpfile in tempfiles.Values)
+			{
+				if (File.Exists(tmpfile))
+				{
+					File.Delete(tmpfile);
+				}
+			}
 		}
 
 		public BazaarRepository(BazaarVersionControl vcs, string url)
@@ -36,89 +51,183 @@ namespace MonoDevelop.VersionControl.Bazaar
 
 		#region implemented abstract members of Repository
 
-		public override string GetBaseText(FilePath localFile)
+		public override string GetBaseText(FilePath localFilePath)
 		{
-			throw new NotImplementedException();
+			string localFile = localFilePath.FullPath;
+
+			try
+			{
+				return Bazaar.GetTextAtRevision(localFile, new BazaarRevision(this, BazaarRevision.HEAD));
+			}
+			catch (Exception e)
+			{
+				LoggingService.LogError("Error getting base text", e);
+			}
+
+			return localFile;
 		}
 
 		protected override Revision[] OnGetHistory(FilePath localFile, Revision since)
 		{
-			throw new NotImplementedException();
+			if (null == LocalBasePath)
+			{
+				LocalBasePath = GetLocalBasePath(localFile.FullPath);
+			}
+			return Bazaar.GetHistory(this, localFile.FullPath, since);
 		}
 
 		protected override IEnumerable<VersionInfo> OnGetVersionInfo(IEnumerable<FilePath> paths, bool getRemoteStatus)
 		{
-			throw new NotImplementedException();
+			foreach (var localPath in paths)
+			{
+				statusCache[localPath] = Bazaar.GetVersionInfo(this, localPath.FullPath, getRemoteStatus);
+			}
+
+			return statusCache.Select(s => s.Value);
 		}
 
 		protected override VersionInfo[] OnGetDirectoryVersionInfo(FilePath localDirectory, bool getRemoteStatus, bool recursive)
 		{
-			throw new NotImplementedException();
+			VersionInfo[] versions = Bazaar.GetDirectoryVersionInfo(this, localDirectory.FullPath, getRemoteStatus, recursive);
+			if (null != versions)
+			{
+				foreach (VersionInfo version in versions)
+				{
+					statusCache[version.LocalPath] = version;
+				}
+			}
+			return versions;
 		}
 
 		protected override Repository OnPublish(string serverPath, FilePath localPath, FilePath[] files, string message, IProgressMonitor monitor)
 		{
-			throw new NotImplementedException();
+			serverPath = string.Format("{0}{1}{2}", Url, Url.EndsWith("/") ? string.Empty : "/", serverPath);
+			Bazaar.StoreCredentials(serverPath);
+			Bazaar.Push(serverPath, localPath.FullPath, false, false, false, monitor);
+
+			return new BazaarRepository(Bazaar, serverPath);
 		}
 
 		protected override void OnUpdate(FilePath[] localPaths, bool recurse, IProgressMonitor monitor)
 		{
-			throw new NotImplementedException();
+			foreach (FilePath localPath in localPaths)
+			{
+				Bazaar.Update(localPath.FullPath, recurse, monitor);
+			}
 		}
 
 		protected override void OnCommit(ChangeSet changeSet, IProgressMonitor monitor)
 		{
-			throw new NotImplementedException();
+			Bazaar.Commit(changeSet, monitor);
 		}
 
 		protected override void OnCheckout(FilePath targetLocalPath, Revision rev, bool recurse, IProgressMonitor monitor)
 		{
-			throw new NotImplementedException();
+			Bazaar.StoreCredentials(Url);
+			BazaarRevision brev = (null == rev) ? new BazaarRevision(this, BazaarRevision.HEAD) : (BazaarRevision)rev;
+			Bazaar.Checkout(Url, targetLocalPath.FullPath, brev, recurse, monitor);
 		}
 
 		protected override void OnRevert(FilePath[] localPaths, bool recurse, IProgressMonitor monitor)
 		{
-			throw new NotImplementedException();
+			foreach (FilePath localPath in localPaths)
+			{
+				Bazaar.Revert(localPath.FullPath, recurse, monitor, new BazaarRevision(this, BazaarRevision.HEAD));
+			}
 		}
 
 		protected override void OnRevertRevision(FilePath localPath, Revision revision, IProgressMonitor monitor)
 		{
-			throw new NotImplementedException();
+			if (IsModified(BazaarRepository.GetLocalBasePath(localPath)))
+			{
+				MessageDialog md = new MessageDialog(null, DialogFlags.Modal, 
+					                   MessageType.Question, ButtonsType.YesNo, 
+					                   GettextCatalog.GetString("You have uncommitted local changes. Revert anyway?"));
+				try
+				{
+					if ((int)ResponseType.Yes != md.Run())
+					{
+						return;
+					}
+				}
+				finally
+				{
+					md.Destroy();
+				}
+			}
+
+			BazaarRevision brev = (BazaarRevision)revision;
+			string localPathStr = localPath.FullPath;
+			Bazaar.Merge(localPathStr, localPathStr, false, true, brev, (BazaarRevision)(brev.GetPrevious()), monitor);
 		}
 
 		protected override void OnRevertToRevision(FilePath localPath, Revision revision, IProgressMonitor monitor)
 		{
-			throw new NotImplementedException();
+			if (IsModified(BazaarRepository.GetLocalBasePath(localPath)))
+			{
+				MessageDialog md = new MessageDialog(null, DialogFlags.Modal, 
+					                   MessageType.Question, ButtonsType.YesNo, 
+					                   GettextCatalog.GetString("You have uncommitted local changes. Revert anyway?"));
+				try
+				{
+					if ((int)ResponseType.Yes != md.Run())
+					{
+						return;
+					}
+				}
+				finally
+				{
+					md.Destroy();
+				}
+			}
+
+			BazaarRevision brev = (null == revision) ? new BazaarRevision(this, BazaarRevision.HEAD) : (BazaarRevision)revision;
+			Bazaar.Revert(localPath.FullPath, true, monitor, brev);
 		}
 
 		protected override void OnAdd(FilePath[] localPaths, bool recurse, IProgressMonitor monitor)
 		{
-			throw new NotImplementedException();
+			foreach (FilePath localPath in localPaths)
+			{
+				Bazaar.Add(localPath.FullPath, recurse, monitor);
+			}
 		}
 
 		protected override void OnDeleteFiles(FilePath[] localPaths, bool force, IProgressMonitor monitor, bool keepLocal)
 		{
-			throw new NotImplementedException();
+			foreach (FilePath localPath in localPaths)
+			{
+				Bazaar.Remove(localPath.FullPath, force, monitor);
+			}
 		}
 
 		protected override void OnDeleteDirectories(FilePath[] localPaths, bool force, IProgressMonitor monitor, bool keepLocal)
 		{
-			throw new NotImplementedException();
+			foreach (FilePath localPath in localPaths)
+			{
+				Bazaar.Remove(localPath.FullPath, force, monitor);
+			}
 		}
 
 		protected override string OnGetTextAtRevision(FilePath repositoryPath, Revision revision)
 		{
-			throw new NotImplementedException();
+			BazaarRevision brev = (null == revision) ? new BazaarRevision(this, BazaarRevision.HEAD) : (BazaarRevision)revision;
+			return Bazaar.GetTextAtRevision(repositoryPath.FullPath, brev);
 		}
 
 		protected override RevisionPath[] OnGetRevisionChanges(Revision revision)
 		{
-			throw new NotImplementedException();
+			return Bazaar.Status(this.RootPath, (BazaarRevision)revision)
+				.Where(s => s.Status != ItemStatus.Unchanged && s.Status != ItemStatus.Ignored)
+				.Select(status => new RevisionPath(Path.Combine(RootPath, status.Filename), ConvertAction(status.Status), status.Status.ToString())).ToArray();
 		}
 
 		protected override void OnIgnore(FilePath[] localPath)
 		{
-			throw new NotImplementedException();
+			foreach (var path in localPath)
+			{
+				Bazaar.Ignore(path.FullPath);
+			}
 		}
 
 		protected override void OnUnignore(FilePath[] localPath)
@@ -132,13 +241,25 @@ namespace MonoDevelop.VersionControl.Bazaar
 
 		public override string[] SupportedProtocols
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { return BazaarVersionControl.protocols; }
 		}
 
 		#endregion
+
+		private static RevisionAction ConvertAction(ItemStatus status)
+		{
+			switch (status)
+			{
+				case ItemStatus.Added:
+					return RevisionAction.Add;
+				case ItemStatus.Modified:
+					return RevisionAction.Modify;
+				case ItemStatus.Deleted:
+					return RevisionAction.Delete;
+			}
+
+			return RevisionAction.Other;
+		}
 
 		internal bool IsVersioned(FilePath localPath)
 		{
@@ -261,9 +382,9 @@ namespace MonoDevelop.VersionControl.Bazaar
 			Bazaar.Push(pushLocation, localPath.FullPath, remember, overwrite, omitHistory, monitor);
 		}
 
-		public virtual void Export (FilePath localPath, FilePath exportLocation, IProgressMonitor monitor)
+		public virtual void Export(FilePath localPath, FilePath exportLocation, IProgressMonitor monitor)
 		{
-			Bazaar.Export (localPath.FullPath, exportLocation.FullPath, monitor);
+			Bazaar.Export(localPath.FullPath, exportLocation.FullPath, monitor);
 		}
 
 		public virtual Dictionary<string, BranchType> GetKnownBranches(FilePath localPath)
@@ -290,5 +411,4 @@ namespace MonoDevelop.VersionControl.Bazaar
 			return IsConflicted(path);
 		}
 	}
-
 }
