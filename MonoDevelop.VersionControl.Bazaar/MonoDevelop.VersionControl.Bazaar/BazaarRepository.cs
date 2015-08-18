@@ -261,6 +261,11 @@ namespace MonoDevelop.VersionControl.Bazaar
 			Bazaar.Push(pushLocation, localPath.FullPath, remember, overwrite, omitHistory, monitor);
 		}
 
+		public virtual void Export (FilePath localPath, FilePath exportLocation, IProgressMonitor monitor)
+		{
+			Bazaar.Export (localPath.FullPath, exportLocation.FullPath, monitor);
+		}
+
 		public virtual Dictionary<string, BranchType> GetKnownBranches(FilePath localPath)
 		{
 			return Bazaar.GetKnownBranches(localPath.FullPath);

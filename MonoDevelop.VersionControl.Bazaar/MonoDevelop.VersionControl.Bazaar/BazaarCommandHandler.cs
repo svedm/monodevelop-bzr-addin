@@ -466,7 +466,33 @@ namespace MonoDevelop.VersionControl.Bazaar
 		}
 		// UpdatePublish
 
+		[CommandHandler (BazaarCommands.Export)]
+		protected void OnExport() 
+		{
+			VersionControlItem vcitem = GetItems ()[0];
+			BazaarRepository repo = ((BazaarRepository)vcitem.Repository);
 
+			FileChooserDialog fsd = new FileChooserDialog (GettextCatalog.GetString ("Choose export location"), 
+				null, FileChooserAction.Save, "Cancel", ResponseType.Cancel, 
+				"Save", ResponseType.Accept);
+			fsd.SetCurrentFolder (vcitem.Path.FullPath.ParentDirectory);
+
+			try {
+				if ((int)Gtk.ResponseType.Accept == fsd.Run () && !string.IsNullOrEmpty (fsd.Filename)) {
+					BazaarTask worker = new BazaarTask ();
+					worker.Description = string.Format ("Exporting to {0}", fsd.Filename);
+					worker.Operation = delegate{ repo.Export (vcitem.Path, fsd.Filename, worker.ProgressMonitor); };
+					worker.Start ();
+				}
+			} finally {
+				fsd.Destroy ();
+			}
+		}// OnExport
+
+		[CommandUpdateHandler (BazaarCommands.Export)]
+		protected void UpdateExport(CommandInfo item) {
+			CanPull (item);
+		}// UpdateExport
 	}
 }
 
