@@ -228,6 +228,19 @@ namespace MonoDevelop.VersionControl.Bazaar
 			((BazaarRepository)vcitem.Repository).Ignore (new [] { vcitem.Path });
 		}// OnIgnore
 
+		[CommandUpdateHandler (BazaarCommands.Bind)]
+		protected void CanBind (CommandInfo item)
+		{
+			if (1 == GetItems ().Count) {
+				VersionControlItem vcitem = GetItems ()[0];
+				if (vcitem.Repository is BazaarRepository) {
+					item.Visible = ((BazaarRepository)vcitem.Repository).CanBind (vcitem.Path);
+					return;
+				}
+			} 
+			item.Visible = false;
+		}// CanBind
+
 		/// <summary>
 		/// Binds a file
 		/// </summary>
@@ -250,6 +263,35 @@ namespace MonoDevelop.VersionControl.Bazaar
 				bsd.Destroy ();
 			}
 		}// OnBind
+
+		[CommandUpdateHandler (BazaarCommands.Unbind)]
+		protected void CanUnbind (CommandInfo item)
+		{
+			if (1 == GetItems ().Count) {
+				VersionControlItem vcitem = GetItems ()[0];
+				if (vcitem.Repository is BazaarRepository) {
+					item.Visible = ((BazaarRepository)vcitem.Repository).CanUnbind (vcitem.Path);
+					return;
+				}
+			} 
+			item.Visible = false;
+		}// CanUnbind
+
+		/// <summary>
+		/// Unbinds a file
+		/// </summary>
+		[CommandHandler (BazaarCommands.Unbind)]
+		protected void OnUnbind()
+		{
+			VersionControlItem vcitem = GetItems ()[0];
+			BazaarRepository repo = (BazaarRepository)vcitem.Repository;
+
+			BazaarTask worker = new BazaarTask ();
+			worker.Description = string.Format ("Unbinding {0}", vcitem.Path);
+			worker.Operation = delegate{ repo.Unbind (vcitem.Path, worker.ProgressMonitor); };
+			worker.Start ();
+		}// OnUnbind
+
 	}
 }
 

@@ -180,6 +180,11 @@ namespace MonoDevelop.VersionControl.Bazaar
 			return (null != info && info.IsVersioned && info.HasLocalChanges);
 		}
 
+		public virtual bool IsBound (FilePath localPath)
+		{
+			return Bazaar.IsBound (localPath.FullPath);
+		}
+
 		public virtual void Resolve (FilePath[] localPaths, bool recurse, IProgressMonitor monitor)
 		{
 			foreach (FilePath localPath in localPaths)
@@ -212,9 +217,24 @@ namespace MonoDevelop.VersionControl.Bazaar
 			return Bazaar.GetBoundBranch (localPath.FullPath);
 		}
 
+		public virtual bool CanBind (FilePath localPath)
+		{
+			return Directory.Exists (localPath.FullPath) && !IsBound (localPath);
+		}
+
 		public virtual void Bind (string branchUrl, FilePath localPath, IProgressMonitor monitor)
 		{
 			Bazaar.Bind (branchUrl, localPath.FullPath, monitor);
+		}
+
+		public virtual bool CanUnbind (FilePath localPath)
+		{
+			return Directory.Exists (localPath.FullPath) && IsBound (localPath);
+		}
+			
+		public virtual void Unbind (FilePath localPath, IProgressMonitor monitor)
+		{
+			Bazaar.Unbind (localPath.FullPath, monitor);
 		}
 
 		public virtual Dictionary<string, BranchType> GetKnownBranches (FilePath localPath)
