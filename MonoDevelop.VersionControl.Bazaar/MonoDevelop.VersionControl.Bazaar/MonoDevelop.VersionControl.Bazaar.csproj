@@ -50,6 +50,7 @@
     <Compile Include="gtk-gui\MonoDevelop.VersionControl.Bazaar.BranchSelectionDialog.cs" />
     <Compile Include="Dialogs\PasswordPromptDialog.cs" />
     <Compile Include="gtk-gui\MonoDevelop.VersionControl.Bazaar.PasswordPromptDialog.cs" />
+    <Compile Include="BranchCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Manifest.addin.xml" />
