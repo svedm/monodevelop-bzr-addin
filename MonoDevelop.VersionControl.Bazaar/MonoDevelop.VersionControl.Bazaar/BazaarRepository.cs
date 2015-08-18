@@ -170,6 +170,16 @@ namespace MonoDevelop.VersionControl.Bazaar
 			return (null != info && info.IsVersioned && (0 != (info.Status & VersionStatus.Conflicted)));
 		}
 
+		public virtual bool IsModified(FilePath localFile)
+		{
+			if (string.IsNullOrEmpty (GetLocalBasePath (localFile.FullPath))) {
+				return false;
+			}
+
+			VersionInfo info = GetCachedVersionInfo (localFile, false);
+			return (null != info && info.IsVersioned && info.HasLocalChanges);
+		}
+
 		public virtual void Resolve (FilePath[] localPaths, bool recurse, IProgressMonitor monitor)
 		{
 			foreach (FilePath localPath in localPaths)
@@ -185,6 +195,16 @@ namespace MonoDevelop.VersionControl.Bazaar
 		{
 			Bazaar.StoreCredentials (pullLocation);
 			Bazaar.Pull (pullLocation, localPath.FullPath, remember, overwrite, monitor);
+		}
+
+		public virtual bool CanMerge (FilePath localPath)
+		{
+			return Directory.Exists(localPath.FullPath) && IsVersioned(localPath);
+		}
+
+		public virtual void Merge (string mergeLocation, FilePath localPath, bool remember, bool overwrite, IProgressMonitor monitor) {
+			Bazaar.StoreCredentials (mergeLocation);
+			Bazaar.Merge (mergeLocation, localPath.FullPath, remember, overwrite, new BazaarRevision (this, BazaarRevision.NONE), new BazaarRevision (this, BazaarRevision.NONE), monitor);
 		}
 
 		public virtual Dictionary<string, BranchType> GetKnownBranches (FilePath localPath)
