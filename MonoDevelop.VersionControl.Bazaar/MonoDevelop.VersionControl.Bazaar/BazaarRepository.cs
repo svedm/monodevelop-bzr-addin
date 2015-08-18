@@ -11,22 +11,24 @@ namespace MonoDevelop.VersionControl.Bazaar
 		private Dictionary<string,string> tempfiles;
 		private Dictionary<FilePath,VersionInfo> statusCache;
 
-		public BazaarVersionControl Bazaar {
-			get { return (BazaarVersionControl) VersionControlSystem; }
+		public BazaarVersionControl Bazaar
+		{
+			get { return (BazaarVersionControl)VersionControlSystem; }
 		}
 
-		public BazaarRepository ()
+		public BazaarRepository()
 		{
-			Init ();
+			Init();
 		}
 
-		public BazaarRepository (BazaarVersionControl vcs,string url) : base (vcs)
+		public BazaarRepository(BazaarVersionControl vcs, string url)
+			: base(vcs)
 		{
-			Init ();
+			Init();
 			Url = url;
 		}
 
-		private void Init ()
+		private void Init()
 		{
 			tempfiles = new Dictionary<string,string>();
 			statusCache = new Dictionary<FilePath, VersionInfo>();
@@ -149,107 +151,119 @@ namespace MonoDevelop.VersionControl.Bazaar
 			return (null != info && info.IsVersioned);
 		}
 
-		private VersionInfo GetCachedVersionInfo (FilePath localPath, bool getRemoteStatus)
+		private VersionInfo GetCachedVersionInfo(FilePath localPath, bool getRemoteStatus)
 		{
 			VersionInfo status = null;
-			if (statusCache.ContainsKey (localPath)) {
+			if (statusCache.ContainsKey(localPath))
+			{
 				status = statusCache[localPath];
-			} else {
-				status = GetVersionInfo (localPath, getRemoteStatus ? VersionInfoQueryFlags.IncludeRemoteStatus : VersionInfoQueryFlags.None);
+			}
+			else
+			{
+				status = GetVersionInfo(localPath, getRemoteStatus ? VersionInfoQueryFlags.IncludeRemoteStatus : VersionInfoQueryFlags.None);
 			}
 			return status;
 		}
 
-		public virtual bool IsConflicted (FilePath localFile)
+		public virtual bool IsConflicted(FilePath localFile)
 		{
-			if (string.IsNullOrEmpty (GetLocalBasePath (localFile.FullPath))) {
+			if (string.IsNullOrEmpty(GetLocalBasePath(localFile.FullPath)))
+			{
 				return false;
 			}
 
-			VersionInfo info = GetCachedVersionInfo (localFile, false);
+			VersionInfo info = GetCachedVersionInfo(localFile, false);
 			return (null != info && info.IsVersioned && (0 != (info.Status & VersionStatus.Conflicted)));
 		}
 
 		public virtual bool IsModified(FilePath localFile)
 		{
-			if (string.IsNullOrEmpty (GetLocalBasePath (localFile.FullPath))) {
+			if (string.IsNullOrEmpty(GetLocalBasePath(localFile.FullPath)))
+			{
 				return false;
 			}
 
-			VersionInfo info = GetCachedVersionInfo (localFile, false);
+			VersionInfo info = GetCachedVersionInfo(localFile, false);
 			return (null != info && info.IsVersioned && info.HasLocalChanges);
 		}
 
-		public virtual bool IsBound (FilePath localPath)
+		public virtual bool IsBound(FilePath localPath)
 		{
-			return Bazaar.IsBound (localPath.FullPath);
+			return Bazaar.IsBound(localPath.FullPath);
 		}
 
-		public virtual void Resolve (FilePath[] localPaths, bool recurse, IProgressMonitor monitor)
+		public virtual void Resolve(FilePath[] localPaths, bool recurse, IProgressMonitor monitor)
 		{
 			foreach (FilePath localPath in localPaths)
-				Bazaar.Resolve (localPath.FullPath, recurse, monitor);
+				Bazaar.Resolve(localPath.FullPath, recurse, monitor);
 		}
 
-		public virtual bool CanPull (FilePath localPath)
-		{
-			return Directory.Exists (localPath.FullPath) && IsVersioned(localPath);
-		}
-
-		public virtual void Pull (string pullLocation, FilePath localPath, bool remember, bool overwrite, IProgressMonitor monitor) 
-		{
-			Bazaar.StoreCredentials (pullLocation);
-			Bazaar.Pull (pullLocation, localPath.FullPath, remember, overwrite, monitor);
-		}
-
-		public virtual bool CanMerge (FilePath localPath)
+		public virtual bool CanPull(FilePath localPath)
 		{
 			return Directory.Exists(localPath.FullPath) && IsVersioned(localPath);
 		}
 
-		public virtual void Merge (string mergeLocation, FilePath localPath, bool remember, bool overwrite, IProgressMonitor monitor) {
-			Bazaar.StoreCredentials (mergeLocation);
-			Bazaar.Merge (mergeLocation, localPath.FullPath, remember, overwrite, new BazaarRevision (this, BazaarRevision.NONE), new BazaarRevision (this, BazaarRevision.NONE), monitor);
+		public virtual void Pull(string pullLocation, FilePath localPath, bool remember, bool overwrite, IProgressMonitor monitor)
+		{
+			Bazaar.StoreCredentials(pullLocation);
+			Bazaar.Pull(pullLocation, localPath.FullPath, remember, overwrite, monitor);
 		}
 
-		public virtual string GetBoundBranch (FilePath localPath)
+		public virtual bool CanMerge(FilePath localPath)
 		{
-			return Bazaar.GetBoundBranch (localPath.FullPath);
+			return Directory.Exists(localPath.FullPath) && IsVersioned(localPath);
 		}
 
-		public virtual bool CanBind (FilePath localPath)
+		public virtual void Merge(string mergeLocation, FilePath localPath, bool remember, bool overwrite, IProgressMonitor monitor)
 		{
-			return Directory.Exists (localPath.FullPath) && !IsBound (localPath);
+			Bazaar.StoreCredentials(mergeLocation);
+			Bazaar.Merge(mergeLocation, localPath.FullPath, remember, overwrite, new BazaarRevision(this, BazaarRevision.NONE), new BazaarRevision(this, BazaarRevision.NONE), monitor);
 		}
 
-		public virtual void Bind (string branchUrl, FilePath localPath, IProgressMonitor monitor)
+		public virtual string GetBoundBranch(FilePath localPath)
 		{
-			Bazaar.Bind (branchUrl, localPath.FullPath, monitor);
+			return Bazaar.GetBoundBranch(localPath.FullPath);
 		}
 
-		public virtual bool CanUnbind (FilePath localPath)
+		public virtual bool CanBind(FilePath localPath)
 		{
-			return Directory.Exists (localPath.FullPath) && IsBound (localPath);
-		}
-			
-		public virtual void Unbind (FilePath localPath, IProgressMonitor monitor)
-		{
-			Bazaar.Unbind (localPath.FullPath, monitor);
+			return Directory.Exists(localPath.FullPath) && !IsBound(localPath);
 		}
 
-		public virtual bool CanUncommit (FilePath localPath)
+		public virtual void Bind(string branchUrl, FilePath localPath, IProgressMonitor monitor)
 		{
-			return Directory.Exists (localPath.FullPath) && IsVersioned(localPath);
+			Bazaar.Bind(branchUrl, localPath.FullPath, monitor);
 		}
 
-		public virtual void Uncommit (FilePath localPath, IProgressMonitor monitor)
+		public virtual bool CanUnbind(FilePath localPath)
 		{
-			Bazaar.Uncommit (localPath.FullPath, monitor);
+			return Directory.Exists(localPath.FullPath) && IsBound(localPath);
 		}
 
-		public virtual Dictionary<string, BranchType> GetKnownBranches (FilePath localPath)
+		public virtual void Unbind(FilePath localPath, IProgressMonitor monitor)
 		{
-			return Bazaar.GetKnownBranches (localPath.FullPath);
+			Bazaar.Unbind(localPath.FullPath, monitor);
+		}
+
+		public virtual bool CanUncommit(FilePath localPath)
+		{
+			return Directory.Exists(localPath.FullPath) && IsVersioned(localPath);
+		}
+
+		public virtual void Uncommit(FilePath localPath, IProgressMonitor monitor)
+		{
+			Bazaar.Uncommit(localPath.FullPath, monitor);
+		}
+
+		public virtual void Push(string pushLocation, FilePath localPath, bool remember, bool overwrite, bool omitHistory, IProgressMonitor monitor)
+		{
+			Bazaar.StoreCredentials(pushLocation);
+			Bazaar.Push(pushLocation, localPath.FullPath, remember, overwrite, omitHistory, monitor);
+		}
+
+		public virtual Dictionary<string, BranchType> GetKnownBranches(FilePath localPath)
+		{
+			return Bazaar.GetKnownBranches(localPath.FullPath);
 		}
 
 		public static string GetLocalBasePath(string localPath)
@@ -268,7 +282,7 @@ namespace MonoDevelop.VersionControl.Bazaar
 
 		public bool CanResolve(FilePath path)
 		{
-			return IsConflicted (path);
+			return IsConflicted(path);
 		}
 	}
 
