@@ -13,37 +13,37 @@ namespace MonoDevelop.VersionControl.Bazaar
 	{
 		#region " P/Invokes "
 
-		[DllImport("python25")]
+		[DllImport("python26")]
 		private static extern void Py_Initialize();
 
-		//		[DllImport ("python25")]
+		//		[DllImport ("python26")]
 		//		private static extern void Py_Finalize ();
 
-		[DllImport("python25")]
+		[DllImport("python26")]
 		private static extern void Py_DecRef(IntPtr pyobj);
 
-		[DllImport("python25")]
+		[DllImport("python26")]
 		private static extern IntPtr PyImport_AddModule(string module);
 
-		[DllImport("python25")]
+		[DllImport("python26")]
 		private static extern IntPtr PyModule_GetDict(IntPtr module);
 
-		[DllImport("python25")]
+		[DllImport("python26")]
 		private static extern IntPtr PyMapping_GetItemString(IntPtr dict, string itemname);
 
-		[DllImport("python25")]
+		[DllImport("python26")]
 		private static extern int PyRun_SimpleString(string command);
 
-		[DllImport("python25")]
+		[DllImport("python26")]
 		private static extern int PyInt_AsLong(IntPtr pyint);
 
-		[DllImport("python25")]
+		[DllImport("python26")]
 		private static extern int PyString_AsStringAndSize(IntPtr pystring, out IntPtr buffer, out int size);
 
-		[DllImport("python25")]
+		[DllImport("python26")]
 		private static extern void PyErr_Clear();
 
-		[DllImport("python25")]
+		[DllImport("python26")]
 		private static extern void PyEval_InitThreads();
 
 		private static Regex unicodeRegex = new Regex(@"^\s*u'(?<realString>.*)'\s*$", RegexOptions.Compiled);

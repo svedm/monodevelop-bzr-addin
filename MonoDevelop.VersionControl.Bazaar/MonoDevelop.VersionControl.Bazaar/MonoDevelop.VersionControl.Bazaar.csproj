@@ -81,4 +81,11 @@
   <ItemGroup>
     <Folder Include="Dialogs\" />
   </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <GtkDesignInfo generateGettext="False" />
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>
