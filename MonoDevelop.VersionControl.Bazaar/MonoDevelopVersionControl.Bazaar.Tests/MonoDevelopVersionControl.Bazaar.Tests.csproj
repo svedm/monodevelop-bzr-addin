@@ -44,9 +44,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseRepositoryTests.cs" />
+    <Compile Include="BaseBazaarRepositoryTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MonoDevelop.VersionControl.Bazaar\MonoDevelop.VersionControl.Bazaar.csproj">
+      <Project>{00AA5C9E-2557-4381-A8DD-27D77D5C3023}</Project>
+      <Name>MonoDevelop.VersionControl.Bazaar</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
