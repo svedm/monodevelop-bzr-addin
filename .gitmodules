@@ -1,0 +1,4 @@
+[submodule "External/MonoDevelop"]
+	path = External/MonoDevelop
+	url = https://github.com/mono/monodevelop
+	branch = master
