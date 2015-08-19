@@ -1,26 +1,13 @@
 language: csharp
 solution: MonoDevelop.VersionControl.Bazaar/MonoDevelop.VersionControl.Bazaar.sln
 mono: latest
-sudo: false
-addons:
- apt:
-  packages:
-   - build-essential
-   - automake
-   - checkinstall
-   - intltool
-   - git
-   - libssh2-1-dev
-   - mono-complete
-   - mono-addins-utils
-   - gtk-sharp2
-   - gnome-sharp2
-   - nuget
-install:
+install: 
+ - sudo apt-get update
+ - sudo apt-get install build-essential automake checkinstall intltool git libssh2-1-dev
+ - sudo apt-get install mono-complete mono-addins-utils gtk-sharp2 gnome-sharp2 nuget
  - nuget restore MonoDevelop.VersionControl.Bazaar
 script:
  - git submodule update --init --recursive
- - ls -al
  - cd External/MonoDevelop/
  - ./configure --profile=stable
  - mozroots --sync --import
