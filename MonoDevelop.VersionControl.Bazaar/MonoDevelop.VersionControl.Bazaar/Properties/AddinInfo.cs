@@ -4,7 +4,7 @@ using Mono.Addins.Description;
 
 [assembly:Addin("VersionControl.Bazaar", 
 	Namespace = "MonoDevelop",
-	Version = "1.0",
+	Version = "0.1",
 	Category = "Version Control")]
 
 [assembly:AddinName("Bazaar support")]

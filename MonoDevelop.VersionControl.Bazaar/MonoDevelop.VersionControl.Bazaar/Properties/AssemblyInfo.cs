@@ -7,5 +7,5 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyProduct ("MonoDevelop")]
 [assembly: AssemblyTitle ("Bazaar support for the Version Control Add-in")]
 [assembly: AssemblyDescription ("Bazaar support for the Version Control Add-in")]
-[assembly: AssemblyVersion ("1.0")]
+[assembly: AssemblyVersion ("0.1")]
 [assembly: AssemblyCopyright ("(c) 2015 Karasev Svetoslav")]
