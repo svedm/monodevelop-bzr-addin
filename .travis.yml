@@ -20,7 +20,8 @@ install:
  - nuget restore MonoDevelop.VersionControl.Bazaar
 script:
  - git submodule update --init --recursive
- - cd External/MonoDevelop
+ - ls -al
+ - cd External/MonoDevelop/
  - ./configure --profile=stable
  - mozroots --sync --import
  - make
