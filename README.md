@@ -1,6 +1,8 @@
 # Bazaar support
 Bazaar support for the MonoDevelop Version Control Add-in
 
+[![Build Status](https://travis-ci.org/svedm/monodevelop-bzr-addin.svg?branch=master)](https://travis-ci.org/svedm/monodevelop-bzr-addin)
+
 #Requirements
 ### On Mac OS X Yosemite
 After installing bazaar for it normal working you should:
