@@ -12,4 +12,5 @@ script:
  - ./configure --profile=stable
  - mozroots --sync --import
  - make
- - cd ..
+ - cd ../..
+ - xbuild /p:Configuration=Release MonoDevelop.VersionControl.Bazaar/MonoDevelop.VersionControl.Bazaar.sln
