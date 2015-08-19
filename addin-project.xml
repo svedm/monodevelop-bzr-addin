@@ -1,0 +1,7 @@
+<AddinProject appVersion="5.9">
+	<Project>
+		<AddinFile>MonoDevelop.VersionControl.Bazaar/MonoDevelop.VersionControl.Bazaar/bin/Debug/MonoDevelop.VersionControl.Bazaar.dll</AddinFile>
+		<BuildFile>MonoDevelop.VersionControl.Bazaar/MonoDevelop.VersionControl.Bazaar.sln</BuildFile>
+		<BuildConfiguration>Debug</BuildConfiguration>
+	</Project>
+</AddinProject>
