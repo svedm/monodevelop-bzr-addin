@@ -4,7 +4,7 @@ mono: latest
 install: 
  - sudo apt-get update
  - sudo apt-get install build-essential automake checkinstall intltool git libssh2-1-dev
- - sudo apt-get install mono-complete mono-addins-utils gtk-sharp2 gnome-sharp2 nuget
+ - sudo apt-get install mono-complete mono-addins-utils gtk-sharp2 gnome-sharp2 nuget monodevelop monodevelop-versioncontrol
  - nuget restore MonoDevelop.VersionControl.Bazaar
 script:
  - git submodule update --init --recursive
